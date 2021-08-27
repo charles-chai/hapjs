@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2022, the hapjs-platform Project Contributors
+ * Copyright (c) 2021-present, the hapjs-platform Project Contributors
  * SPDX-License-Identifier: Apache-2.0
  */
 
@@ -18,18 +18,29 @@ public class DisplayInfo {
 
     private static final String KEY_PAGES = "pages";
     private static final String KEY_THEME_MODE = "themeMode";
+    private static final String KEY_FIT_WIDE_SCREEN = "fitWideScreenMode";
+    public static final String MODE_ORIGINAL = "original";
+    public static final String MODE_FIT_SCREEN = "fitScreen";
+    public static final String MODE_FILL_SCREEN = "fillScreen";
+
     private static final String KEY_PAGE_ANIMATION = "pageAnimation";
 
     private Style mDefaultStyle;
     private Map<String, Style> mPagesStyle;
     private int mThemeMode; // dark-no--0,dark_yes--1,auto-- -1
     private JSONObject mPageAnimation;
+    private String mFitMode;
 
     public static DisplayInfo parse(JSONObject jsonObject) {
         DisplayInfo displayInfo = new DisplayInfo();
         displayInfo.mDefaultStyle = Style.parse(jsonObject);
         displayInfo.mThemeMode = jsonObject.optInt(KEY_THEME_MODE, -1);
         displayInfo.mPageAnimation = jsonObject.optJSONObject(KEY_PAGE_ANIMATION);
+
+        String fitMode = jsonObject.optString(KEY_FIT_WIDE_SCREEN);
+        if (!TextUtils.isEmpty(fitMode)) {
+            displayInfo.mFitMode = fitMode;
+        }
 
         JSONObject pagesObject = jsonObject.optJSONObject(KEY_PAGES);
         if (pagesObject != null) {
@@ -48,6 +59,14 @@ public class DisplayInfo {
         }
 
         return displayInfo;
+    }
+
+    public String getFitMode() {
+        return mFitMode;
+    }
+
+    public void setFitMode(String fitMode) {
+        mFitMode = fitMode;
     }
 
     public Style getDefaultStyle() {
